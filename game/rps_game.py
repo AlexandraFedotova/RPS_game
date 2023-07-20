@@ -32,6 +32,3 @@ class Game:
                 return f"Bot move is {bot_move}. Player win"
             if bot_move == winner and player_move == loser:
                 return f"Bot move is {bot_move}. Bot win"
-
-
-rps_game = Game()
