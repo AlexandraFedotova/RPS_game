@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name  : rps-game-service
+  labels:
+    owner: alexandrafedotova
+spec:
+  selector:
+    app: rps-game-app
+  ports:
+    - port      : 80
+      targetPort: 5000
+  type: LoadBalancer
