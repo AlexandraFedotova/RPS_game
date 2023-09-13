@@ -12,6 +12,11 @@ def healthcheck():
     return {"message": "Healthcheck is OK"}
 
 
+@app.get("/moves")
+def get_moves():
+    return rps_game.moves
+
+
 @app.get("/{move}")
 def game(move: str):
     check = rps_game.check_player_move(move)
