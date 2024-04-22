@@ -10,9 +10,12 @@ pipeline {
             }
         }
         stage('Test') {
-            steps {
+            try {
                 echo "Test stage"
                 sh 'pytest tests/'
+            }
+            finally {
+                echo "Tests done"
             }
         }
         stage('Build image') {
