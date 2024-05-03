@@ -6,20 +6,23 @@ pipeline {
         string(name: 'docker_username', defaultValue: 'alexandrafedotova', description: 'Username for DockerHub')
         string(name: 'docker_reponame', defaultValue: 'private', description: 'DockerHub user repository name')
         string(name: 'app_name', defaultValue: 'rps_game', description: 'Image name')
+        string(name: 'branch', defaultValue: 'master', description: 'Branch name for work')
     }
 
     stages {
         stage('Get code'){
             steps {
                 checkout scmGit(
-                    branches: [[name: 'master']],
+                    branches: [[name: $branch]],
                     userRemoteConfigs: [[url: 'https://github.com/AlexandraFedotova/RPS_game.git']])
             }
         }
         stage('Build image') {
             steps {
-                echo "Build stage"
-                def app = docker.build("${docker_username}/${docker_reponame}/${app_name}:${env.BUILD_TAG}")
+                script {
+                    echo "Build stage"
+                    def app = docker.build("${docker_username}/${docker_reponame}/${app_name}:${env.BUILD_TAG}")
+                }
             }
         }
         stage('Run tests') {
@@ -36,9 +39,12 @@ pipeline {
         }
         stage('Push image') {
             steps {
-                echo "Push stage"
-                withDockerRegistry(credentialsId: 'DockerCreds') {
-                    app.push()
+                script {
+                    echo "Push stage"
+                    withDockerRegistry(credentialsId: 'DockerCreds') {
+                        app.push()
+                        app.push('latest')
+                    }
                 }
             }
         }
