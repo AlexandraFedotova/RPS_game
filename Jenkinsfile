@@ -7,14 +7,15 @@ pipeline {
         string(name: 'docker_reponame', defaultValue: 'private', description: 'DockerHub user repository name')
         string(name: 'app_name', defaultValue: 'rps_game', description: 'Image name')
         string(name: 'branch', defaultValue: 'master', description: 'Branch name for work')
+        string(name: 'repo_url', defaultValue: 'https://github.com/AlexandraFedotova/RPS_game.git',
+        description: 'Git repository url')
     }
 
     stages {
         stage('Get code'){
             steps {
-                checkout scmGit(
-                    branches: [[name: $branch]],
-                    userRemoteConfigs: [[url: 'https://github.com/AlexandraFedotova/RPS_game.git']])
+                echo "Get code "
+                checkout scmGit(branches: [[name: "$branch"]], userRemoteConfigs: [[url: "$repo_url"]])
             }
         }
         stage('Build image') {
