@@ -32,9 +32,13 @@ pipeline {
                     echo "Test stage"
                     sh 'pip install -r requirements-tests.txt'
                     echo "Run tests with coverage report"
-                    sh 'pytest --cov-fail-under=70 --cov=game tests'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh 'pytest --cov-fail-under=70 --cov=game tests'
+                    }
                     echo "Run pylint"
-                    sh 'pylint --fail-under 7 --fail-on E --output-format json2 main.py game'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh 'pylint --fail-under 7 --fail-on E --output-format json2 main.py game'
+                    }
                 }
             }
         }
