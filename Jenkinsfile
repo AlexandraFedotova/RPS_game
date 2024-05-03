@@ -1,8 +1,7 @@
 pipeline {
     agent {label 'python && kubectl'}
-
+    def app
     parameters {
-        string(name: 'app', defaultValue: '', description: 'Used inside pipeline')
         string(name: 'docker_username', defaultValue: 'alexandrafedotova', description: 'Username for DockerHub')
         string(name: 'docker_reponame', defaultValue: 'private', description: 'DockerHub user repository name')
         string(name: 'app_name', defaultValue: 'rps_game', description: 'Image name')
@@ -22,7 +21,7 @@ pipeline {
             steps {
                 script {
                     echo "Build stage"
-                    def app = docker.build("${docker_username}/${docker_reponame}/${app_name}:${env.BUILD_TAG}")
+                    app = docker.build("${docker_username}/${docker_reponame}/${app_name}:${env.BUILD_TAG}")
                 }
             }
         }
