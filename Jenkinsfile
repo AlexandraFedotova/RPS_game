@@ -52,7 +52,7 @@ pipeline {
         }
         stage('Deploy app') {
             steps {
-                withKubeConfig([credentialsId: 'KubeConfig', namespace: "${k8s_namespace}"]) {
+                withKubeConfig([credentialsId: 'KubeConfig', serverUrl: 'https://176.109.103.35:6443', namespace: "${k8s_namespace}"]) {
                     sh 'kubectl cluster-info'
                     sh 'kubectl get services -A'
                     sh 'kubectl apply -f k8s/game-service.yaml -f k8s/game-deployment.yaml --record'
