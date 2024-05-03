@@ -53,7 +53,7 @@ pipeline {
         stage('Deploy app') {
             steps {
                 withKubeConfig([credentialsId: 'KubeConfig', serverUrl: 'https://176.109.103.35']) {
-                    sh 'kubectl config set-context --current --namespace=rps-game-${develop}'
+                    sh "kubectl config set-context --current --namespace=${k8s_namespace}"
                     sh 'kubectl apply -f k8s/game-service.yaml -f k8s/game-deployment.yaml --record'
                 }
             }
