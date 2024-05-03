@@ -1,43 +1,40 @@
 def app
 pipeline {
-    agent {label 'python && kubectl'}
+    agent {label 'python'}
 
     parameters {
         string(name: 'docker_username', defaultValue: 'alexandrafedotova', description: 'Username for DockerHub')
-        string(name: 'docker_reponame', defaultValue: 'private', description: 'DockerHub user repository name')
-        string(name: 'app_name', defaultValue: 'rps_game', description: 'Image name')
-        string(name: 'branch', defaultValue: 'master', description: 'Branch name for work')
-        string(name: 'repo_url', defaultValue: 'https://github.com/AlexandraFedotova/RPS_game.git',
-        description: 'Git repository url')
+        string(name: 'app_name', defaultValue: 'rps_game', description: 'Docker image name')
+        string(name: 'branch', defaultValue: 'master', description: 'Project branch name')
+        string(name: 'repo_url', defaultValue: 'https://github.com/AlexandraFedotova/RPS_game.git', description: 'Git repository url')
     }
 
     stages {
-        stage('Get code'){
+        stage('Get source code'){
             steps {
-                echo "Get code "
                 checkout scmGit(branches: [[name: "${branch}"]], userRemoteConfigs: [[url: "${repo_url}"]])
             }
         }
         stage('Build image') {
             steps {
+                echo "Build app image: ${docker_username}/${app_name}:${env.BUILD_TAG}"
                 script {
-                    echo "Build stage"
                     app = docker.build("${docker_username}/${app_name}:${env.BUILD_TAG}")
                 }
             }
         }
-        stage('Run tests') {
+        stage('Run tests and SAST') {
             steps {
                 withPythonEnv('python3'){
-                    echo "Test stage"
+                    // Install tests requirements
                     sh 'pip install -r requirements-tests.txt'
-                    echo "Run tests with coverage report"
+                    // Run pytest
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        sh 'pytest --cov-fail-under=70 --cov=game tests'
+                        sh 'pytest --cov-fail-under=70 --cov=game --cov-report term-missing tests'
                     }
-                    echo "Run pylint"
+                    // Run pylint
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        sh 'pylint --fail-under 7 --fail-on E --output-format json2 main.py game'
+                        sh 'pylint --fail-under 7 --fail-on E --output-format json2 game'
                     }
                 }
             }
@@ -45,16 +42,14 @@ pipeline {
         stage('Push image') {
             steps {
                 script {
-                    echo "Push stage"
                     withDockerRegistry(credentialsId: 'DockerCreds') {
-                        sh 'docker '
                         app.push()
                         app.push('latest')
                     }
                 }
             }
         }
-        stage('Deploy new app version') {
+        stage('Deploy app') {
             steps {
                 echo "Deploy stage - passed "
             }
