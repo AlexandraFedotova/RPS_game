@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     echo "Build stage"
-                    app = docker.build("${docker_username}/${docker_reponame}/${app_name}:${env.BUILD_TAG}")
+                    app = docker.build("${docker_username}/${app_name}:${env.BUILD_TAG}")
                 }
             }
         }
@@ -47,6 +47,7 @@ pipeline {
                 script {
                     echo "Push stage"
                     withDockerRegistry(credentialsId: 'DockerCreds') {
+                        sh 'docker '
                         app.push()
                         app.push('latest')
                     }
