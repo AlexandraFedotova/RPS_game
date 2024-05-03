@@ -7,7 +7,7 @@ pipeline {
         string(name: 'app_name', defaultValue: 'rps_game', description: 'Docker image name')
         string(name: 'branch', defaultValue: 'master', description: 'Project branch name')
         string(name: 'repo_url', defaultValue: 'https://github.com/AlexandraFedotova/RPS_game.git', description: 'Git repository url')
-        string(name: 'k8s_namespace': defaultValue: 'rps-game-develop', description: 'k8s namespaces for resource creation')
+        string(name: 'k8s_namespace', defaultValue: 'rps-game-develop', description: 'k8s namespaces for resource creation')
     }
 
     stages {
