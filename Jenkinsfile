@@ -7,6 +7,7 @@ pipeline {
         string(name: 'app_name', defaultValue: 'rps_game', description: 'Docker image name')
         string(name: 'branch', defaultValue: 'master', description: 'Project branch name')
         string(name: 'repo_url', defaultValue: 'https://github.com/AlexandraFedotova/RPS_game.git', description: 'Git repository url')
+        string(name: 'k8s_namespace': defaultValue: 'rps-game-develop', description: 'k8s namespaces for resource creation')
     }
 
     stages {
@@ -52,6 +53,7 @@ pipeline {
         stage('Deploy app') {
             steps {
                 withKubeConfig([credentialsId: 'KubeConfig', serverUrl: 'https://176.109.103.35']) {
+                    sh 'kubectl config set-context --current --namespace=rps-game-${develop}'
                     sh 'kubectl apply -f k8s/game-service.yaml -f k8s/game-deployment.yaml --record'
                 }
             }
