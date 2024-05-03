@@ -51,7 +51,9 @@ pipeline {
         }
         stage('Deploy app') {
             steps {
-                echo "Deploy stage - passed "
+                withKubeConfig([credentialsId: 'KubeConfig', serverUrl: 'https://176.109.103.35']) {
+                    sh 'kubectl apply -f k8s/game-service.yaml -f k8s/game-deployment.yaml --record'
+                }
             }
         }
     }
