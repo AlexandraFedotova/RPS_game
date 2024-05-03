@@ -1,6 +1,7 @@
+def app
 pipeline {
     agent {label 'python && kubectl'}
-    def app
+
     parameters {
         string(name: 'docker_username', defaultValue: 'alexandrafedotova', description: 'Username for DockerHub')
         string(name: 'docker_reponame', defaultValue: 'private', description: 'DockerHub user repository name')
