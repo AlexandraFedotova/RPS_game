@@ -15,7 +15,7 @@ pipeline {
         stage('Get code'){
             steps {
                 echo "Get code "
-                checkout scmGit(branches: [[name: "$branch"]], userRemoteConfigs: [[url: "$repo_url"]])
+                checkout scmGit(branches: [[name: "${branch}"]], userRemoteConfigs: [[url: "${repo_url}"]])
             }
         }
         stage('Build image') {
