@@ -1,4 +1,4 @@
-import uvicorn as uvicorn
+import uvicorn
 from fastapi import FastAPI, HTTPException
 from starlette import status
 

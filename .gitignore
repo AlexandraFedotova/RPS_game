@@ -1,0 +1,6 @@
+*.json
+*.xml
+.coverage
+venv
+__pycache__
+.idea
