@@ -1,13 +1,13 @@
 def app
 pipeline {
-    agent {label 'python'}
+    agent {label 'python && kubectl'}
 
     parameters {
-        string(name: 'docker_username', defaultValue: 'alexandrafedotova', description: 'Username for DockerHub')
+        string(name: 'docker_username', defaultValue: 'alexandrafedotova', description: 'Username for Docker Hub')
         string(name: 'app_name', defaultValue: 'rps_game', description: 'Docker image name')
         string(name: 'branch', defaultValue: 'master', description: 'Project branch name')
         string(name: 'repo_url', defaultValue: 'https://github.com/AlexandraFedotova/RPS_game.git', description: 'Git repository url')
-        string(name: 'k8s_namespace', defaultValue: 'rps-game-develop', description: 'k8s namespaces for resource creation')
+        string(name: 'k8s_namespace', defaultValue: 'rps-game-develop', description: 'K8s namespaces for resource creation')
     }
 
     stages {
@@ -52,7 +52,7 @@ pipeline {
         }
         stage('Deploy app') {
             steps {
-                withKubeConfig([credentialsId: 'KubeConfig', serverUrl: 'https://176.109.103.35:6443', namespace: "${k8s_namespace}"]) {
+                withKubeConfig([credentialsId: 'KubeConfig', namespace: "${k8s_namespace}"]) {
                     sh 'kubectl apply -f k8s/game-service.yaml -f k8s/game-deployment.yaml'
                 }
             }
@@ -65,5 +65,3 @@ pipeline {
         }
     }
 }
-
-
