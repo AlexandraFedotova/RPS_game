@@ -5,7 +5,7 @@ pipeline {
     parameters {
         string(name: 'docker_username', defaultValue: 'alexandrafedotova', description: 'Username for Docker Hub')
         string(name: 'app_name', defaultValue: 'rps_game', description: 'Docker image name')
-        string(name: 'branch', description: 'Project branch name')
+        string(name: 'branch', defaultValue: 'develop', description: 'Project branch name')
         string(name: 'repo_url', defaultValue: 'https://github.com/AlexandraFedotova/RPS_game.git', description: 'Git repository url')
         string(name: 'k8s_namespace', defaultValue: 'rps-game-develop', description: 'K8s namespaces for resource creation')
     }
@@ -18,9 +18,9 @@ pipeline {
         }
         stage('Build image') {
             steps {
-                echo "Build app image: ${docker_username}/${app_name}:${env.BUILD_TAG}"
+                echo "Build app image: ${docker_username}/${app_name}:${env.BUILD_NUMBER}"
                 script {
-                    app = docker.build("${docker_username}/${app_name}:${env.BUILD_TAG}")
+                    app = docker.build("${docker_username}/${app_name}:${env.BUILD_NUMBER}")
                 }
             }
         }
