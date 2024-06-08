@@ -5,4 +5,4 @@ COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 COPY game/ ./game
 CMD python game/main.py
-EXPOSE 5000
+EXPOSE 80
