@@ -2,9 +2,10 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from starlette import status
 
-import rps_game
+from rps_game import Game
 
 app = FastAPI()
+rps_game = Game()
 
 
 @app.get("/")
